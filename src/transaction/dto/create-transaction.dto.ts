@@ -1,5 +1,12 @@
-import { IsDateString, IsNumber, IsOptional, IsString } from 'class-validator';
+import {
+  IsDateString,
+  IsEnum,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { TransactionInterface } from '../../interface/transaction.interface';
+import { CategoryType } from '../../interface/category.interface';
 
 export class CreateTransactionDto
   implements
@@ -25,6 +32,9 @@ export class CreateTransactionDto
 
   @IsNumber()
   category_id: number;
+
+  @IsEnum(CategoryType)
+  category_type: TransactionInterface['category']['type'];
 
   @IsNumber()
   wallet_id: number;

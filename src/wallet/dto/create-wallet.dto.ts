@@ -6,9 +6,9 @@ import {
   IsNumber,
   IsOptional,
   IsString,
-  Length,
-  ValidateNested,
-} from 'class-validator';
+  Length, ValidateIf,
+  ValidateNested
+} from "class-validator";
 import { Type } from 'class-transformer';
 import { User } from '../../entities/user.entity';
 import { WalletInterface } from '../../interface/wallet.interface';
@@ -32,6 +32,7 @@ export class CreateWalletDto implements Partial<WalletInterface> {
   @IsNumber()
   balance: WalletInterface['balance'];
 
+  @IsOptional()
   @IsEnum(StatusWallet)
   status: WalletInterface['status'];
 
@@ -55,4 +56,16 @@ export class CreateWalletDto implements Partial<WalletInterface> {
   @IsDateString()
   @IsOptional()
   created_date: WalletInterface['created_date'];
+
+  @ValidateIf((o) => o.type == TypeWallet.SAVING)
+  @IsDateString()
+  start_date: WalletInterface['start_date'];
+
+  @ValidateIf((o) => o.type == TypeWallet.SAVING)
+  @IsDateString()
+  end_date: WalletInterface['end_date'];
+
+  @ValidateIf((o) => o.type == TypeWallet.SAVING)
+  @IsNumber()
+  target: WalletInterface['target'];
 }

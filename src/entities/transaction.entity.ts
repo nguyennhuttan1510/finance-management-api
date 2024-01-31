@@ -13,12 +13,11 @@ import { TransactionInterface } from '../interface/transaction.interface';
 import { Category } from './category.entity';
 import { Expose } from 'class-transformer';
 import { Wallet } from './wallet.entity';
-import { SubCategory } from './sub-category.entity';
 import { Event } from './event.entity';
 
 @Entity('TRANSACTION')
 export class Transaction
-  implements Omit<TransactionInterface, 'category' | 'wallet' | 'event'>
+  implements Omit<TransactionInterface, 'wallet' | 'event'>
 {
   @Expose({
     name: 'transactionID',
@@ -47,8 +46,8 @@ export class Transaction
   @Expose({
     name: 'createdDate',
   })
-  @CreateDateColumn()
-  created_date: Date;
+  @CreateDateColumn({ type: 'timestamp' })
+  created_date: TransactionInterface['created_date'];
 
   @Expose({
     name: 'updatedDate',
@@ -56,10 +55,11 @@ export class Transaction
   @UpdateDateColumn()
   updated_date: Date;
 
-  @ManyToOne(() => SubCategory, (category) => category.transactions, {
-    onDelete: 'SET NULL',
+  @ManyToOne(() => Category, (category) => category.transactions, {
+    onDelete: 'CASCADE',
   })
-  category: TransactionInterface['category'] | number;
+  @JoinColumn({ name: 'category_id' })
+  category: TransactionInterface['category'];
 
   @ManyToOne(() => Wallet, (wallet) => wallet.transactions, {
     onDelete: 'CASCADE',

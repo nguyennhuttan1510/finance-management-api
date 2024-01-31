@@ -6,8 +6,9 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { CategoryInterface } from '../interface/category.interface';
-import { SubCategory } from './sub-category.entity';
 import { Expose } from 'class-transformer';
+import { Transaction } from './transaction.entity';
+import { Event } from './event.entity';
 
 @Entity('CATEGORY')
 export class Category implements CategoryInterface {
@@ -17,13 +18,22 @@ export class Category implements CategoryInterface {
   @PrimaryGeneratedColumn()
   category_id: CategoryInterface['category_id'];
 
+  @Expose({
+    name: 'parentID',
+  })
+  @Column({ type: 'int', nullable: true, default: null })
+  parent_id: CategoryInterface['parent_id'];
+
   @Column('text')
   name: CategoryInterface['name'];
 
   @Column('text')
   icon: CategoryInterface['icon'];
 
-  @Column({ type: 'integer' })
+  @Column({ type: 'text', nullable: true, default: null })
+  description: CategoryInterface['description'];
+
+  @Column({ type: 'int' })
   type: CategoryInterface['type'];
 
   @Expose({
@@ -32,6 +42,13 @@ export class Category implements CategoryInterface {
   @CreateDateColumn()
   created_date: CategoryInterface['created_date'];
 
-  @OneToMany(() => SubCategory, (subCategory) => subCategory.category)
-  categories: SubCategory[];
+  @OneToMany(() => Transaction, (transaction) => transaction.category, {
+    onDelete: 'SET NULL',
+  })
+  transactions: Transaction[];
+
+  @OneToMany(() => Event, (event) => event.transactions, {
+    onDelete: 'SET NULL',
+  })
+  events: Transaction[];
 }

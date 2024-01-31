@@ -1,4 +1,3 @@
-import { SubCategory } from '../entities/sub-category.entity';
 import { Transaction } from '../entities/transaction.entity';
 
 export enum CategoryType {
@@ -11,7 +10,9 @@ export interface CategoryInterface {
   category_id: number;
   name: string;
   icon: string;
+  description: string;
   type: CategoryType;
   created_date: Date;
   transactions?: Transaction[];
+  parent_id: number;
 }

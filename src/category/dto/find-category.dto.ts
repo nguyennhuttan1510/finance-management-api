@@ -2,7 +2,13 @@ import {
   CategoryInterface,
   CategoryType,
 } from '../../interface/category.interface';
-import { IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
+import {
+  IsDateString,
+  IsEnum,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export class FindCategoryDto implements Partial<CategoryInterface> {
   @IsNumber()

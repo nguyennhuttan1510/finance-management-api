@@ -1,4 +1,4 @@
 import { PartialType } from '@nestjs/swagger';
-import { CreateMetadatumDto } from './create-metadatum.dto';
+import { CreateMetadataDto } from './create-metadatum.dto';
 
-export class UpdateMetadatumDto extends PartialType(CreateMetadatumDto) {}
+export class UpdateMetadatumDto extends PartialType(CreateMetadataDto) {}

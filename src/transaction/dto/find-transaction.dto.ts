@@ -1,6 +1,8 @@
 import { TransactionInterface } from '../../interface/transaction.interface';
 import { IsDateString, IsNumber, IsOptional, IsString } from 'class-validator';
 import { Type } from 'class-transformer';
+import { Transaction } from '../../entities/transaction.entity';
+import { Category } from '../../entities/category.entity';
 
 export class FindTransactionDto
   implements Partial<Omit<TransactionInterface, 'wallet' | 'category'>>
@@ -24,12 +26,19 @@ export class FindTransactionDto
   @Type(() => Number)
   amount: TransactionInterface['amount'];
 
-  @IsOptional()
   @IsNumber()
   @Type(() => Number)
   wallet_id: number;
 
   @IsOptional()
   @IsString()
-  group_by: 'category' | 'transaction';
+  group_by: 'category' | 'transaction' | 'day';
+
+  @IsOptional()
+  @IsDateString()
+  start_date: string;
+
+  @IsOptional()
+  @IsDateString()
+  end_date: string;
 }

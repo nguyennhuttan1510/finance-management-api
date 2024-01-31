@@ -1,12 +1,12 @@
-import { MetadataInterface } from '../../interface/metadata.interface';
+import { MetadataQueryType } from '../../interface/metadataQueryType';
 import { IsNumber, IsOptional, IsString, ValidateIf } from 'class-validator';
 
-export class FindMetadataDto implements MetadataInterface {
+export class FindMetadataDto implements MetadataQueryType {
   @ValidateIf((o) => o.group == undefined)
   @IsString()
-  type: MetadataInterface['type'];
+  type: MetadataQueryType['type'];
 
   @ValidateIf((o) => o.type == undefined)
   @IsString()
-  group: MetadataInterface['group'];
+  group: MetadataQueryType['group'];
 }

@@ -13,9 +13,12 @@ import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { FindCategoryDto } from './dto/find-category.dto';
-import { TransformInterceptor } from '../interceptor/transform.interceptor';
+import {
+  ResponsePattern,
+  TransformFallbackInterceptor,
+} from '../interceptor/transform.interceptor';
 
-@UseInterceptors(TransformInterceptor)
+@UseInterceptors(TransformFallbackInterceptor)
 @Controller({
   path: 'category',
   version: '1',
@@ -24,8 +27,9 @@ export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
   @Post()
-  create(@Body() createCategoryDto: CreateCategoryDto) {
-    return this.categoryService.create(createCategoryDto);
+  async create(@Body() createCategoryDto: CreateCategoryDto) {
+    const category = await this.categoryService.create(createCategoryDto);
+    return new ResponsePattern(category, true, 'create category successful');
   }
 
   @Get()
@@ -47,7 +51,12 @@ export class CategoryController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.categoryService.remove(+id);
+  async remove(@Param('id') id: string) {
+    const categoryDelete = await this.categoryService.remove(+id);
+    return new ResponsePattern(
+      categoryDelete,
+      true,
+      `category ${id} was deleted`,
+    );
   }
 }

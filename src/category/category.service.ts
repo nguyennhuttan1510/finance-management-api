@@ -7,7 +7,7 @@ import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Category } from '../entities/category.entity';
-import { Repository } from 'typeorm';
+import { FindManyOptions, FindOneOptions, Repository } from 'typeorm';
 import { FindCategoryDto } from './dto/find-category.dto';
 
 @Injectable()
@@ -17,10 +17,20 @@ export class CategoryService {
     private repositoryCategory: Repository<Category>,
   ) {}
   async create(createCategoryDto: CreateCategoryDto) {
+    // CHECK ONLY NESTED ONE TIME
+    const categoryParent = await this.findOne(createCategoryDto.parent_id);
+    const isInValid = Boolean(categoryParent.parent_id);
+    if (isInValid) {
+      throw new BadRequestException(
+        `category ${createCategoryDto.parent_id} is subcategory, please select parent category not is subcategory`,
+      );
+    }
     try {
       const category = new Category();
       category.name = createCategoryDto.name;
+      category.parent_id = createCategoryDto.parent_id;
       category.type = createCategoryDto.type;
+      category.description = createCategoryDto.description;
       category.icon = createCategoryDto.icon;
       return await this.repositoryCategory.save(category);
     } catch (e) {
@@ -28,18 +38,26 @@ export class CategoryService {
     }
   }
 
-  async findAll(query: FindCategoryDto) {
+  async findAll(query?: FindCategoryDto) {
     try {
       return await this.repositoryCategory.find({
         where: {
-          name: query.name,
-          type: query.type,
-          category_id: query.category_id,
+          name: query?.name,
+          type: query?.type,
+          category_id: query?.category_id,
         },
+      });
+    } catch (e) {
+      throw new NotFoundException('not found categories');
+    }
+  }
+
+  async findAllCategoryForMetaData() {
+    try {
+      return await this.repositoryCategory.find({
         relations: {
-          categories: true,
+          transactions: false,
         },
-        relationLoadStrategy: 'query',
       });
     } catch (e) {
       throw new NotFoundException('not found categories');

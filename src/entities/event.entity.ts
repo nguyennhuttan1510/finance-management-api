@@ -10,8 +10,8 @@ import {
 } from 'typeorm';
 import { EventInterface } from '../interface/event.interface';
 import { User } from './user.entity';
-import { SubCategory } from './sub-category.entity';
 import { Transaction } from './transaction.entity';
+import { Category } from "./category.entity";
 
 @Entity('EVENT')
 export class Event implements Omit<EventInterface, 'members' | 'category'> {
@@ -42,7 +42,7 @@ export class Event implements Omit<EventInterface, 'members' | 'category'> {
   })
   members: EventInterface['members'] | number;
 
-  @ManyToOne(() => SubCategory, (category) => category.event)
+  @ManyToOne(() => Category, (category) => category.events)
   category: EventInterface['category'] | number;
 
   @OneToMany(() => Transaction, (transaction) => transaction.event, {
